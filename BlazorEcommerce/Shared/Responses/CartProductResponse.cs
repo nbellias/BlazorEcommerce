@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorEcommerce.Shared
+namespace BlazorEcommerce.Shared.Responses
 {
-    public class CartProductResultDTO
+    public class CartProductResponse
     {
         public Guid ProductId { get; set; }
         public string Title { get; set; } = string.Empty;

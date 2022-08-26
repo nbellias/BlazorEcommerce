@@ -1,4 +1,5 @@
 ﻿using BlazorEcommerce.Shared.Entities;
+using BlazorEcommerce.Shared.Responses;
 
 namespace BlazorEcommerce.Client.Services.CartService
 {
@@ -6,11 +7,10 @@ namespace BlazorEcommerce.Client.Services.CartService
     {
         event Action OnChange;
         Task AddToCart(CartItem cartItem);
-        Task<List<CartItem>> GetCartItems();
-        Task<List<CartProductResultDTO>> GetCartProducts();
+        Task<List<CartProductResponse>> GetCartProducts();
         Task RemoveProductFromCart(Guid productId, Guid productTypeId);
-        Task UpdateQuantity(CartProductResultDTO product);
-        //Task StoreCartItems(bool emptyLocalCart);
-        //Task GetCartItemsCount();
+        Task UpdateQuantity(CartProductResponse product);
+        Task StoreCartItems(bool emptyLocalCart);
+        Task GetCartItemsCount();
     }
 }

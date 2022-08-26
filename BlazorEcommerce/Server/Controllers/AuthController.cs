@@ -1,4 +1,6 @@
 ﻿using BlazorEcommerce.Shared.Entities;
+using BlazorEcommerce.Shared.Requests;
+using BlazorEcommerce.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

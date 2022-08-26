@@ -1,5 +1,6 @@
-﻿using BlazorEcommerce.Server.Services.ProductService;
-using BlazorEcommerce.Shared.Entities;
+﻿using BlazorEcommerce.Shared.Entities;
+using BlazorEcommerce.Shared.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,45 +17,73 @@ namespace BlazorEcommerce.Server.Controllers
             _productService = productService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductsAsync()
+        [HttpGet("admin"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetAdminProducts()
         {
-            var result = await _productService.GetProductListAsync();
+            var result = await _productService.GetAdminProducts();
+            return Ok(result);
+        }
+
+        [HttpPost, Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<Product>>> CreateProduct(Product product)
+        {
+            var result = await _productService.CreateProduct(product);
+            return Ok(result);
+        }
+
+        [HttpPut, Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<Product>>> UpdateProduct(Product product)
+        {
+            var result = await _productService.UpdateProduct(product);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<bool>>> DeleteProduct(Guid id)
+        {
+            var result = await _productService.DeleteProduct(id);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProducts()
+        {
+            var result = await _productService.GetProductsAsync();
             return Ok(result);
         }
 
         [HttpGet("{productId}")]
-        public async Task<ActionResult<ServiceResponse<Product>>> GetProductAsync(Guid productId)
+        public async Task<ActionResult<ServiceResponse<Product>>> GetProduct(Guid productId)
         {
             var result = await _productService.GetProductAsync(productId);
             return Ok(result);
         }
 
         [HttpGet("category/{categoryUrl}")]
-        public async Task<ActionResult<ServiceResponse<Product>>> GetProductsByCategoryAsync(string categoryUrl)
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductsByCategory(string categoryUrl)
         {
-            var result = await _productService.GetProductsByCategoryAsync(categoryUrl);
+            var result = await _productService.GetProductsByCategory(categoryUrl);
             return Ok(result);
         }
 
         [HttpGet("search/{searchText}/{page}")]
-        public async Task<ActionResult<ServiceResponse<ProductSearchResultDTO>>> SearchProductsAsync(string searchText, int page = 1)
+        public async Task<ActionResult<ServiceResponse<ProductSearchResponse>>> SearchProducts(string searchText, int page = 1)
         {
-            var result = await _productService.SearchProductsAsync(searchText,page);
+            var result = await _productService.SearchProducts(searchText, page);
             return Ok(result);
         }
 
         [HttpGet("searchsuggestions/{searchText}")]
-        public async Task<ActionResult<ServiceResponse<string>>> GetProductSearchSuggestionsAsync(string searchText)
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductSearchSuggestions(string searchText)
         {
-            var result = await _productService.GetProductSearchSuggestionsAsync(searchText);
+            var result = await _productService.GetProductSearchSuggestions(searchText);
             return Ok(result);
         }
 
         [HttpGet("featured")]
-        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetFeaturedProductsAsync()
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetFeaturedProducts()
         {
-            var result = await _productService.GetFeaturedProductsAsync();
+            var result = await _productService.GetFeaturedProducts();
             return Ok(result);
         }
     }

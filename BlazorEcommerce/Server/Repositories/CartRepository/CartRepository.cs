@@ -1,4 +1,5 @@
 ﻿using BlazorEcommerce.Shared.Entities;
+using BlazorEcommerce.Shared.Responses;
 
 namespace BlazorEcommerce.Server.Repositories.CartRepository
 {
@@ -13,11 +14,11 @@ namespace BlazorEcommerce.Server.Repositories.CartRepository
             _authService = authService;
         }
 
-        public async Task<ServiceResponse<List<CartProductResultDTO>>> GetCartProducts(List<CartItem> cartItems)
+        public async Task<ServiceResponse<List<CartProductResponse>>> GetCartProducts(List<CartItem> cartItems)
         {
-            var result = new ServiceResponse<List<CartProductResultDTO>>
+            var result = new ServiceResponse<List<CartProductResponse>>
             {
-                Data = new List<CartProductResultDTO>()
+                Data = new List<CartProductResponse>()
             };
 
             foreach (var item in cartItems)
@@ -42,7 +43,7 @@ namespace BlazorEcommerce.Server.Repositories.CartRepository
                     continue;
                 }
 
-                var cartProduct = new CartProductResultDTO
+                var cartProduct = new CartProductResponse
                 {
                     ProductId = product.Id,
                     Title = product.Title,

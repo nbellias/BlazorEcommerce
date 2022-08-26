@@ -1,5 +1,8 @@
 ﻿@page "/cart"
 @inject ICartService CartService
+@inject IOrderService OrderService
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
 
 <PageTitle>Shopping Cart</PageTitle>
 
@@ -37,20 +40,27 @@ else
             Total (@cartProducts.Count): $@cartProducts.Sum(product => @product.Price * product.Quantity)
         </div>
     </div>
+    @if (isAuthenticated)
+    {
+        <div>
+            <h5>Delivery Address</h5>
+            <AddressForm />
+        </div>
+    }
+    <button @onclick="PlaceOrder" class="btn alert-success float-end mt-1">Checkout</button>
 }
 
 
+
 @code {
-    List<CartProductResultDTO> cartProducts = null;
+    List<CartProductResponse> cartProducts = null;
     string message = "Loading cart...";
-    //bool isAuthenticated = false;
+    bool isAuthenticated = false;
 
     protected override async Task OnInitializedAsync()
     {
-
-        //isAuthenticated = await AuthService.IsUserAuthenticated();
+        isAuthenticated = await AuthService.IsUserAuthenticated();
         await LoadCart();
-
     }
 
     private async Task RemoveProductFromCart(Guid productId, Guid productTypeId)
@@ -61,18 +71,15 @@ else
 
     private async Task LoadCart()
     {
-        if ((await CartService.GetCartItems()).Count == 0)
+        await CartService.GetCartItemsCount();
+        cartProducts = await CartService.GetCartProducts();
+        if (cartProducts == null || cartProducts.Count == 0)
         {
             message = "Your cart is empty.";
-            cartProducts = new List<CartProductResultDTO>();
-        }
-        else
-        {
-            cartProducts = await CartService.GetCartProducts();
         }
     }
 
-    private async Task UpdateQuantity(ChangeEventArgs e, CartProductResultDTO product)
+    private async Task UpdateQuantity(ChangeEventArgs e, CartProductResponse product)
     {
         product.Quantity = int.Parse(e.Value.ToString());
         if (product.Quantity < 1)
@@ -80,5 +87,9 @@ else
         await CartService.UpdateQuantity(product);
     }
 
-
+    private async Task PlaceOrder()
+    {
+        string url = await OrderService.PlaceOrder();
+        NavigationManager.NavigateTo(url);
+    }
 }

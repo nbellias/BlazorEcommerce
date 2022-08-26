@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using BlazorEcommerce.Shared.Requests;
+using BlazorEcommerce.Shared.Responses;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BlazorEcommerce.Client.Services.AuthService
 {

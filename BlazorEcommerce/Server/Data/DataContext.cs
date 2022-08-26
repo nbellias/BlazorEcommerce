@@ -12,8 +12,18 @@ namespace BlazorEcommerce.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Composite Keys
+
+            modelBuilder.Entity<OrderItem>()
+                .HasKey(oi => new { oi.OrderId, oi.ProductId, oi.ProductTypeId });
+
             modelBuilder.Entity<CartItem>()
                 .HasKey(ci => new { ci.UserId, ci.ProductId, ci.ProductTypeId });
+
+            modelBuilder.Entity<ProductVariant>()
+                .HasKey(p => new { p.ProductId, p.ProductTypeId });
+
+            //Data
 
             modelBuilder.Entity<Category>().HasData(
                 new Category
@@ -141,10 +151,7 @@ namespace BlazorEcommerce.Server.Data
                     new ProductType { Id = Guid.Parse("d6b9cc8c-803f-4ba0-8ffb-a3171baaf618"), Name = "PC" },
                     new ProductType { Id = Guid.Parse("c1a0a0a5-abaa-4051-b3dc-ff4acc37f678"), Name = "PlayStation" },
                     new ProductType { Id = Guid.Parse("9c453430-13ec-4af0-be34-0466ad416573"), Name = "Xbox" }
-                ); ;
-
-            modelBuilder.Entity<ProductVariant>()
-                .HasKey(p => new { p.ProductId, p.ProductTypeId });
+                );
 
             modelBuilder.Entity<ProductVariant>()
                 .HasData(
@@ -268,5 +275,8 @@ namespace BlazorEcommerce.Server.Data
         public DbSet<Address> Addresses { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Image> Images { get; set; }
     }
 }

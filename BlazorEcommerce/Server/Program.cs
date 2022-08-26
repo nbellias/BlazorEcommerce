@@ -1,4 +1,3 @@
-global using BlazorEcommerce.Shared;
 global using Microsoft.EntityFrameworkCore;
 global using BlazorEcommerce.Server.Data;
 global using BlazorEcommerce.Server.Repositories.ProductRepository;
@@ -8,13 +7,16 @@ global using BlazorEcommerce.Server.Services.ProductService;
 global using BlazorEcommerce.Server.Services.CategoryService;
 global using BlazorEcommerce.Server.Services.CartService;
 global using BlazorEcommerce.Server.Services.AuthService;
+global using BlazorEcommerce.Server.Services.AddressService;
+global using BlazorEcommerce.Server.Services.OrderService;
+global using BlazorEcommerce.Server.Services.ProductTypeService;
+global using BlazorEcommerce.Server.Services.PaymentService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -22,7 +24,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-//Swagger capabilities (see also below UseSwaggerUI)
+//SWAGGER: Swagger capabilities (see also below UseSwaggerUI)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -33,7 +35,11 @@ builder.Services
     .AddScoped<ICategoryRepository, CategoryRepository>()
     .AddScoped<ICategoryService, CategoryService>()
     .AddScoped<ICartRepository, CartRepository>()
-    .AddScoped<ICartService, CartService>();
+    .AddScoped<ICartService, CartService>()
+    .AddScoped<IOrderService, OrderService>()
+    .AddScoped<IAddressService, AddressService>()
+    .AddScoped<IPaymentService, PaymentService>()
+    .AddScoped<IProductTypeService, ProductTypeService>();
 
 //Auth services (see also below UseAuthentication, UseAuthorization)
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -55,6 +61,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
+//SWAGGER: See also above
 app.UseSwaggerUI();
 
 // Configure the HTTP request pipeline.
@@ -69,6 +76,7 @@ else
     app.UseHsts();
 }
 
+//SWAGGER: See also above
 app.UseSwagger();
 
 app.UseHttpsRedirection();

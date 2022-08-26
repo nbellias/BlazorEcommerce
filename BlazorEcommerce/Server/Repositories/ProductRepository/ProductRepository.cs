@@ -1,4 +1,5 @@
 ﻿using BlazorEcommerce.Shared.Entities;
+using BlazorEcommerce.Shared.Responses;
 
 namespace BlazorEcommerce.Server.Repositories.ProductRepository
 {
@@ -120,7 +121,7 @@ namespace BlazorEcommerce.Server.Repositories.ProductRepository
             };
         }
 
-        public async Task<ServiceResponse<ProductSearchResultDTO>> SearchProductsAsync(string searchText, int page)
+        public async Task<ServiceResponse<ProductSearchResponse>> SearchProductsAsync(string searchText, int page)
         {
             var pageResults = 2f;
             var pageCount = Math.Ceiling((await FindProductsBySearchText(searchText)).Count / pageResults);
@@ -134,9 +135,9 @@ namespace BlazorEcommerce.Server.Repositories.ProductRepository
                                 .Take((int)pageResults)
                                 .ToListAsync();
 
-            var response = new ServiceResponse<ProductSearchResultDTO>()
+            var response = new ServiceResponse<ProductSearchResponse>()
             {
-                Data = new ProductSearchResultDTO
+                Data = new ProductSearchResponse
                 {
                     Products = products,
                     CurrentPage = page,
