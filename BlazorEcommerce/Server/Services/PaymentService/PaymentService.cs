@@ -10,13 +10,18 @@ namespace BlazorEcommerce.Server.Services.PaymentService
         private readonly IAuthService _authService;
         private readonly IOrderService _orderService;
 
-        const string secret = "whsec_cq1WH9CX9U1zxU9EpbBVvWOhfb6e5ysR";
+        //The following secret is created by running locally
+        //the Stripe-CLI with stripe login in a command prompt
+        //const string secret = "acct_1Lb1O4GzR5G9GEJa";
+
+        //The following secret is used when using web hooks
+        const string secret = "whsec_ccbf2f7ce3a45b2c20433fdd3f700c7623a9d7996f753bd5771a78655d6976b5";
 
         public PaymentService(ICartService cartService,
             IAuthService authService,
             IOrderService orderService)
         {
-            StripeConfiguration.ApiKey = "sk_test_51HnFFuJWja1dketA1LY3VQds3XWpByD5GE8laKrxyNldWKnXXdktvITJiG3PYNDMwpSkrAv33d7JjvHDEUGPPo2E00vkDMlVIb";
+            StripeConfiguration.ApiKey = "sk_test_51Lb1O4GzR5G9GEJa7bVwcIurubz604bhwFSzmEwFojQBJ5UxjCSwORrfm62WJQuBidrGYHeTHRdbcndQjCAhtLfu0067c654qY";
 
             _cartService = cartService;
             _authService = authService;
@@ -56,8 +61,8 @@ namespace BlazorEcommerce.Server.Services.PaymentService
                 },
                 LineItems = lineItems,
                 Mode = "payment",
-                SuccessUrl = "https://localhost:7226/order-success",
-                CancelUrl = "https://localhost:7226/cart"
+                SuccessUrl = "https://localhost:44334/order-success",
+                CancelUrl = "https://localhost:44334/cart"
             };
 
             var service = new SessionService();
@@ -65,6 +70,11 @@ namespace BlazorEcommerce.Server.Services.PaymentService
             return session;
         }
 
+        //In order the FulfillOrder works, we need to turn on a web hook
+        //by running locally in the command prompt the following command:
+        //stripe listen --forward-to https://localhost:44334/api/payment
+        //Then a secret is produced which we should replace in the variable
+        //at line 18 above.
         public async Task<ServiceResponse<bool>> FulfillOrder(HttpRequest request)
         {
             var json = await new StreamReader(request.Body).ReadToEndAsync();
